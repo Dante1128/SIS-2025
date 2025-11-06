@@ -21,7 +21,6 @@ return new class extends Migration
             DB::statement('EXEC sp_msforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"');
         }
 
-        // Usamos el mismo bloque 'down()' para asegurarnos de que todo se borre
         $this->down();
         // --- FIN DE LA SECCIÓN DE LIMPIEZA ---
 
@@ -33,9 +32,7 @@ return new class extends Migration
             $table->string('descripcion', 100)->nullable();
         });
 
-        // ... (El resto de tus `Schema::create` va aquí, no necesitas volver a pegarlo, ya está bien)
-        // Pega el resto de tus tablas aquí
-        Schema::create('Dominio', function (Blueprint $table) {
+        Schema::create('dominio', function (Blueprint $table) {
             $table->id('id_dominio');
             $table->string('descripcion', 150)->nullable();
             $table->boolean('estado')->nullable();
@@ -81,7 +78,7 @@ return new class extends Migration
             $table->foreignId('id_persona')->constrained('Persona', 'id_persona');
         });
 
-        Schema::create('Subdominio', function (Blueprint $table) {
+        Schema::create('subdominio', function (Blueprint $table) {
             $table->id('id_subdominio');
             $table->string('descripcion', 150)->nullable();
             $table->foreignId('id_dominio')->constrained('Dominio', 'id_dominio');

@@ -22,6 +22,7 @@
         <a href="#" style="margin-bottom: 10px;">Curso</a>
         <a href="#" style="margin-bottom: 10px;">Competencias</a>
         <a href="#" style="margin-bottom: 10px;">Area</a>
+        <a href="{{ route('dominioSubdominio') }}" style="margin-bottom: 10px;">Dominio y Subdomino</a>
     </div>
 
     <!-- Contenido principal -->
