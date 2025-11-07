@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="width: 100%; height: 100%;">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body>
 
-<div style="display: flex; height: 100vh;">
+<body>
 
     <!-- Sidebar -->
     <div style="width: 250px; display: flex; flex-direction: column;border-right: 10px solid #CCE54F;background-color: #152039;color:#ffffff">
@@ -32,7 +32,10 @@
         @yield('content')
     </div>
 
-</div>
+    <main class="content">
+        @yield('content')
+    </main>
 
 </body>
+
 </html>
