@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inicio</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body style="margin:0;">
 
@@ -43,7 +45,11 @@
       </a>
       <a href='{{ route("dominioSubdominio") }}' style="margin-bottom:10px; text-decoration:none; padding:17px 5px 10px 21px; color:#ffffff; font-size:18px;">
         <i class="fa-solid fa-diagram-project" style="padding-right:10px;"></i>Dominio y Subdomino
-      </a>
+      <a href='{{ route("usuarios.listado") }}' 
+   style="margin-bottom:10px; text-decoration:none; padding:17px 5px 10px 21px; color:#ffffff; font-size:18px;">
+  <i class="fa-solid fa-users" style="padding-right:10px;"></i>Gestión de Usuarios
+</a>
+
     </aside>
 
     <!-- Contenido principal -->
