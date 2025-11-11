@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\http\Controllers\GestionController;
 use App\Http\Controllers\DominioSubdominioController;
+use App\Http\Controllers\UsuarioController;
 
 Route::get('/', function () {
     return view('base');
@@ -22,3 +23,9 @@ Route::patch('/dominio/{id}/toggle', [DominioSubdominioController::class, 'toggl
 Route::post('/subdominio', [DominioSubdominioController::class, 'storeSubdominio'])->name('subdominio.store');
 Route::put('/subdominio/{id}', [DominioSubdominioController::class, 'updateSubdominio'])->name('subdominio.update');
 Route::patch('/subdominio/{id}/toggle', [DominioSubdominioController::class, 'toggleSubdominio'])->name('subdominio.toggle');
+//--------Gestión de Usuarios--------------
+Route::get('/usuarios', [UsuarioController::class, 'listado'])->name('usuarios.listado');
+Route::get('/usuarios/configuracion', [UsuarioController::class, 'configuracion'])->name('usuarios.configuracion');
+Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');
+Route::put('/usuarios/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
+Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');

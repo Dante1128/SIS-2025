@@ -46,12 +46,14 @@
                 @csrf
                 <div class="form-group">
                     <label for="id_dominio" class="form-label">Dominio</label>
-                    <select id="id_dominio" name="id_dominio" class="form-select" required>
+                
+                    <select name="id_dominio" name="id_dominio" class="form-select" required>
                         <option value="">Seleccione un dominio</option>
-                        @foreach ($dominios as $dominio)
+                        @foreach($dominiosActivos as $dominio)
                             <option value="{{ $dominio->id_dominio }}">{{ $dominio->descripcion }}</option>
                         @endforeach
                     </select>
+
                 </div>
                 <div class="form-group">
                     <label for="descripcion_subdominio" class="form-label">Descripción del Subdominio</label>
