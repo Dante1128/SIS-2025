@@ -11,7 +11,8 @@ class DominioSubdominioController extends Controller
     public function index()
     {
         $dominios = Dominio::with('subdominios')->get();
-        return view('dominioSubdominio.dominioSubDominio', compact('dominios'));
+        $dominiosActivos = Dominio::where('estado', 1)->get();
+        return view('dominioSubdominio.dominioSubDominio', compact('dominios', 'dominiosActivos'));
     }
 
     public function storeDominio(Request $request)
