@@ -16,5 +16,8 @@ class Departamento extends Model
         'cod_departamento',
     ];
 
-    
+    public function programas()
+    {
+        return $this->hasMany(Programa::class, 'id_departamento', 'id_departamento');
+    }
 }
