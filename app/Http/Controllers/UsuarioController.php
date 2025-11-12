@@ -9,14 +9,14 @@ use App\Models\Rol;
 
 class UsuarioController extends Controller
 {
-    // Listado de usuarios
+    
     public function listado()
     {
         $usuarios = Persona::with(['cargo', 'rol'])->get();
         return view('gestionUsuarios.listadoUsuarios', compact('usuarios'));
     }
 
-    // Configuración de usuarios
+  
     public function configuracion()
     {
         $usuarios = Persona::with(['cargo', 'rol'])->get();
@@ -25,10 +25,10 @@ class UsuarioController extends Controller
         return view('gestionUsuarios.configuracionUsuarios', compact('usuarios', 'cargos', 'roles'));
     }
 
-    // Crear nuevo usuario
+    
     public function store(Request $request)
     {
-        // Crear usuario
+        
         $usuario = new Persona();
         $usuario->nombres = $request->nombres;
         $usuario->apellidos = $request->apellidos;
@@ -37,7 +37,7 @@ class UsuarioController extends Controller
         $usuario->celular = $request->celular;
         $usuario->save();
 
-        // Crear cargo solo si se seleccionó
+    
         if ($request->id_cargo) {
             Cargo::create([
                 'id_persona' => $usuario->id_persona,
@@ -46,7 +46,7 @@ class UsuarioController extends Controller
             ]);
         }
 
-        // Crear rol solo si se seleccionó
+    
         if ($request->id_rol) {
             Rol::create([
                 'id_persona' => $usuario->id_persona,
@@ -58,7 +58,7 @@ class UsuarioController extends Controller
         return redirect()->route('usuarios.configuracion')->with('success', 'Usuario creado correctamente');
     }
 
-    // Actualizar usuario
+  
     public function update(Request $request, $id)
     {
         $usuario = Persona::findOrFail($id);
@@ -69,7 +69,7 @@ class UsuarioController extends Controller
         $usuario->celular = $request->celular;
         $usuario->save();
 
-        // Actualizar o crear cargo
+       
         if ($request->id_cargo) {
             Cargo::updateOrCreate(
                 ['id_persona' => $id],
@@ -77,7 +77,7 @@ class UsuarioController extends Controller
             );
         }
 
-        // Actualizar o crear rol
+    
         if ($request->id_rol) {
             Rol::updateOrCreate(
                 ['id_persona' => $id],
@@ -88,13 +88,13 @@ class UsuarioController extends Controller
         return redirect()->route('usuarios.configuracion')->with('success', 'Usuario actualizado correctamente');
     }
 
-    // Eliminar usuario
+ 
     public function destroy($id)
     {
         $usuario = Persona::findOrFail($id);
         $usuario->delete();
 
-        // Opcional: eliminar cargos y roles relacionados
+       
         Cargo::where('id_persona', $id)->delete();
         Rol::where('id_persona', $id)->delete();
 
