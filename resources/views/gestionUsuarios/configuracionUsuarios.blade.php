@@ -55,21 +55,26 @@
           <div class="col-md-6">
             <label class="form-label">Cargo</label>
             <select name="id_cargo" class="form-select">
-              <option value="">Seleccione un cargo</option>
-              @foreach($cargos as $cargo)
-                <option value="{{ $cargo->id_cargo }}">{{ $cargo->nombre_cargo }}</option>
-              @endforeach
-            </select>
+            <option value="">Sin cargo</option>
+            @foreach($cargos as $cargo)
+              <option value="{{ $cargo->id_cargo }}" {{ old('id_cargo') == $cargo->id_cargo ? 'selected' : '' }}>
+                {{ $cargo->nombre_cargo }}
+              </option>
+            @endforeach
+          </select>
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Rol</label>
-            <select name="id_rol" class="form-select">
+            <select name="id_rol" class="form-select" required>
               <option value="">Seleccione un rol</option>
               @foreach($roles as $rol)
-                <option value="{{ $rol->id_rol }}">{{ $rol->nombre_rol }}</option>
+                <option value="{{ $rol->id_rol }}" {{ old('id_rol') == $rol->id_rol ? 'selected' : '' }}>
+                  {{ $rol->nombre_rol }}
+                </option>
               @endforeach
             </select>
+
           </div>
 
           <div class="col-12 d-flex gap-2">
