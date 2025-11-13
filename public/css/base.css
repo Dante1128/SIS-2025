@@ -1,0 +1,110 @@
+
+.html-full {
+    width: 100%;
+    height: 100%;
+}
+
+.body-layout {
+    /* Asumo que el body es el contenedor principal y es flex para el sidebar y el contenido */
+    display: flex;
+    margin: 0;
+    padding: 0;
+    /* Para asegurar que ocupe todo el espacio sin márgenes por defecto */
+}
+
+/* Estilos de la Barra Lateral (Sidebar) */
+.sidebar {
+    flex: 0 0 250px;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    border-right: 10px solid #CCE54F;
+    background-color: #152039;
+    color: #ffffff;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+/* Estilos del Logo */
+.sidebar-logo-container {
+    margin-bottom: 20px;
+}
+
+.sidebar-logo {
+    width: 85%;
+    padding: 30px 20px 20px 20px;
+}
+
+/* Estilos de los elementos de menú (enlaces principales) */
+
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
+/* Icono del menú (fa-solid) */
+.menu-icon {
+    padding-right: 10px;
+    font-size: 17px;
+}
+
+/* Icono de la flecha del submenú */
+.submenu-toggle-icon {
+    margin-left: auto;
+}
+
+/* Contenedor del Submenú */
+.submenu {
+    margin-left: 25px;
+    font-size: 16px;
+    overflow: hidden;
+    /* Para que la transición de altura se vea bien si se aplica en JS */
+    transition: all 0.3s ease;
+}
+
+/* Clases para el estado del submenú, usadas en JS */
+.submenu-hidden {
+    display: none;
+}
+
+.submenu-visible {
+    display: block;
+}
+
+/* Enlaces del Submenú */
+.submenu-link {
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+    margin: 10px 0 10px 10px;
+    font-size: 17px;
+}
+
+/* Icono de los enlaces del submenú */
+.submenu-icon {
+    padding-right: 8px;
+}
+
+/* Estilos para los enlaces 'Carga' y 'Reportes' que están fuera de un .menu-item */
+.sidebar-link-standalone {
+    margin: 10px 20px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos del Contenido Principal */
+.main-content-container {
+    flex-grow: 1;
+    padding: 20px;
+}
