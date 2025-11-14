@@ -1,60 +1,141 @@
 @extends('base')
 
 @section('content')
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<link href="/css/usuarios.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/gestion.css') }}">
 
-<div class="container py-4 bg-emi">
-  <div class="headline">
-    <h2>Gestión de Usuarios</h2>
+  <div class="dominio-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h1 class="dominio-title" style="margin: 0;">Gestión de Usuarios</h1>
+      <button type="button" class="btn btn-primary" onclick="abrirModalNuevo()">
+        + Agregar Usuario
+      </button>
+    </div>
+
+    @if(session('success'))
+      <div class="alert alert-success">
+        <span class="alert-icon">✓</span>
+        <span>{{ session('success') }}</span>
+      </div>
+    @endif
+
+    <h2 class="section-title">Lista de Usuarios Registrados</h2>
+
+    @if($usuarios->count() > 0)
+      <div style="overflow-x: auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Código Persona</th>
+              <th>Nombre Completo</th>
+              <th>Email</th>
+              <th>Género</th>
+              <th>Celular</th>
+              <th>Cargo</th>
+              <th style="text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($usuarios as $usuario)
+              <tr>
+                <td>{{ $usuario->id_persona }}</td>
+                <td>{{ $usuario->cod_persona }}</td>
+                <td>{{ $usuario->nombres }} {{ $usuario->apellidos }}</td>
+                <td>{{ $usuario->email }}</td>
+                <td>{{ $usuario->genero ?? '-' }}</td>
+                <td>{{ $usuario->celular ?? '-' }}</td>
+                <td>{{ $usuario->cargoPersona->cargo->nombre_cargo ?? 'Sin asignar' }}</td>
+                <td style="text-align: center;">
+                  <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                    <button type="button" class="btn btn-success btn-sm"
+                      onclick="editarUsuario({{ $usuario->id_persona }}, '{{ $usuario->nombres }}', '{{ $usuario->apellidos }}', '{{ $usuario->email }}', '{{ $usuario->genero }}', '{{ $usuario->celular }}', '{{ $usuario->cod_persona }}', {{ $usuario->id_cargo ?? 'null' }})">
+                      Editar
+                    </button>
+                    <form action="{{ route('usuarios.destroy', $usuario->id_persona) }}" method="POST"
+                      style="display: inline;" onsubmit="return confirm('¿Está seguro de eliminar este usuario?');">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        Eliminar
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    @else
+      <div class="empty-state">
+        <div class="empty-state-icon">👥</div>
+        <div class="empty-state-title">No hay usuarios registrados</div>
+        <p>Comience creando un nuevo usuario usando el botón "Agregar Usuario".</p>
+      </div>
+    @endif
   </div>
 
-  <div class="row g-4">
-    <!-- Card: Nuevo Usuario -->
-    <div class="col-12 row-4">
-      <div class="card-emi p-4">
-        <h5 class="card-title mb-3">Nuevo Usuario</h5>
-
-        <form action="{{ route('usuarios.store') }}" method="POST" class="row g-3 needs-validation" novalidate>
-          @csrf
-
-          <div class="col-md-6">
-            <label class="form-label">Nombres *</label>
-            <input type="text" name="nombres" class="form-control" placeholder="Ej. Juan Carlos" required>
-            <div class="invalid-feedback">Campo requerido.</div>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label">Apellidos *</label>
-            <input type="text" name="apellidos" class="form-control" placeholder="Ej. Pérez López" required>
-            <div class="invalid-feedback">Campo requerido.</div>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label">Email *</label>
-            <input type="email" name="email" class="form-control" placeholder="usuario@dominio.com" required>
-            <div class="invalid-feedback">Email inválido.</div>
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">Género</label>
-            <select name="genero" class="form-select">
-              <option value="">Seleccione</option>
-              <option>Masculino</option>
-              <option>Femenino</option>
-            </select>
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">Celular</label>
-            <input type="text" name="celular" class="form-control" placeholder="70000000" pattern="^\d{6,15}$">
-            <div class="form-text form-text-hint">Solo números, 6–15 dígitos.</div>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label">Cargo</label>
-            <select name="id_cargo" class="form-select">
+  {{-- Modal de Nuevo Usuario --}}
+  <div id="modalNuevoUsuario" class="modal-overlay">
+    <div class="modal-content-wrapper" style="max-width: 700px;">
+      <button onclick="cerrarModalNuevo()" class="modal-close">&times;</button>
+      <h2 class="section-title" style="margin-top: 0;">Nuevo Usuario</h2>
+      <form action="{{ route('usuarios.store') }}" method="POST">
+        @csrf
+        <div class="form-group">
+          <label for="nombres" class="form-label">Nombres</label>
+          <input type="text" id="nombres" name="nombres" class="form-input" placeholder="Ingrese los nombres"
+            value="{{ old('nombres') }}" required>
+          @error('nombres')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="apellidos" class="form-label">Apellidos</label>
+          <input type="text" id="apellidos" name="apellidos" class="form-input" placeholder="Ingrese los apellidos"
+            value="{{ old('apellidos') }}" required>
+          @error('apellidos')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="usuario@dominio.com"
+            value="{{ old('email') }}" required>
+          @error('email')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="genero" class="form-label">Género</label>
+          <select id="genero" name="genero" class="form-select">
+            <option value="">Seleccione</option>
+            <option value="Masculino" {{ old('genero') == 'Masculino' ? 'selected' : '' }}>Masculino</option>
+            <option value="Femenino" {{ old('genero') == 'Femenino' ? 'selected' : '' }}>Femenino</option>
+          </select>
+          @error('genero')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="celular" class="form-label">Celular</label>
+          <input type="text" id="celular" name="celular" class="form-input" placeholder="70000000"
+            value="{{ old('celular') }}" pattern="^\d{6,15}$">
+          @error('celular')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="cod_persona" class="form-label">Código de Persona</label>
+          <input type="text" id="cod_persona" name="cod_persona" class="form-input"
+            placeholder="Ingrese el código de persona" maxlength="20" value="{{ old('cod_persona') }}" required>
+          @error('cod_persona')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
+        </div>
+        <div class="form-group">
+          <label for="id_cargo" class="form-label">Cargo</label>
+          <select id="id_cargo" name="id_cargo" class="form-select">
             <option value="">Sin cargo</option>
             @foreach($cargos as $cargo)
               <option value="{{ $cargo->id_cargo }}" {{ old('id_cargo') == $cargo->id_cargo ? 'selected' : '' }}>
@@ -62,160 +143,127 @@
               </option>
             @endforeach
           </select>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label">Rol</label>
-            <select name="id_rol" class="form-select" required>
-              <option value="">Seleccione un rol</option>
-              @foreach($roles as $rol)
-                <option value="{{ $rol->id_rol }}" {{ old('id_rol') == $rol->id_rol ? 'selected' : '' }}>
-                  {{ $rol->nombre_rol }}
-                </option>
-              @endforeach
-            </select>
-
-          </div>
-
-          <div class="col-12 d-flex gap-2">
-            <button type="submit" class="btn btn-emi"><i class="bi bi-check2-circle me-1"></i> Registrar Usuario</button>
-            <a href="{{ route('usuarios.listado') }}" class="btn btn-outline-secondary"><i class="bi bi-list-ul me-1"></i> Ver Listado</a>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Tabla -->
-    <div class="col-12">
-      <div class="card-emi p-4">
-        <h5 class="card-title mb-3">Lista de Usuarios Registrados</h5>
-        <div class="table-responsive">
-          <table class="table table-emi align-middle mb-0" id="tablaUsuarios">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Nombre Completo</th>
-                <th>Email</th>
-                <th>Género</th>
-                <th>Celular</th>
-                <th>Cargo</th>
-                <th>Rol</th>
-                <th class="actions-col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach($usuarios as $usuario)
-              <tr>
-                <td>{{ $usuario->id_persona }}</td>
-                <td>{{ $usuario->nombres }} {{ $usuario->apellidos }}</td>
-                <td>{{ $usuario->email }}</td>
-                <td>{{ $usuario->genero }}</td>
-                <td>{{ $usuario->celular }}</td>
-                <td>{{ $usuario->cargo->nombre_cargo ?? 'Sin asignar' }}</td>
-                <td><span class="badge badge-role">{{ $usuario->rol->nombre_rol ?? 'Sin asignar' }}</span></td>
-                <td>
-                  <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-warning btn-sm"
-                      data-bs-toggle="modal" data-bs-target="#editarUsuarioModal"
-                      data-id="{{ $usuario->id_persona }}"
-                      data-nombres="{{ $usuario->nombres }}"
-                      data-apellidos="{{ $usuario->apellidos }}"
-                      data-email="{{ $usuario->email }}"
-                      data-genero="{{ $usuario->genero }}"
-                      data-celular="{{ $usuario->celular }}"
-                      data-id_cargo="{{ $usuario->id_cargo }}"
-                      data-id_rol="{{ $usuario->id_rol }}">
-                      <i class="bi bi-pencil-square"></i> Editar
-                    </button>
-
-                    <form action="{{ route('usuarios.destroy', $usuario->id_persona) }}" method="POST" class="d-inline">
-                      @csrf @method('DELETE')
-                      <button class="btn btn-danger btn-sm" data-confirm="¿Eliminar este usuario?">
-                        <i class="bi bi-trash"></i> Eliminar
-                      </button>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-              @endforeach
-            </tbody>
-          </table>
+          @error('id_cargo')
+            <span class="error-message">{{ $message }}</span>
+          @enderror
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Modal Editar -->
-<div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-labelledby="editarUsuarioLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content p-1">
-      <form id="formEditarUsuario" method="POST" class="needs-validation" novalidate>
-        @csrf @method('PUT')
-        <div class="modal-header">
-          <h5 class="modal-title" id="editarUsuarioLabel">Editar Usuario</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" name="id_persona" id="edit_id_persona">
-
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Nombres *</label>
-              <input type="text" name="nombres" id="edit_nombres" class="form-control" required>
-              <div class="invalid-feedback">Requerido.</div>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Apellidos *</label>
-              <input type="text" name="apellidos" id="edit_apellidos" class="form-control" required>
-              <div class="invalid-feedback">Requerido.</div>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Email *</label>
-              <input type="email" name="email" id="edit_email" class="form-control" required>
-              <div class="invalid-feedback">Email inválido.</div>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Género</label>
-              <select name="genero" id="edit_genero" class="form-select">
-                <option value="">Seleccione</option>
-                <option>Masculino</option>
-                <option>Femenino</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Celular</label>
-              <input type="text" name="celular" id="edit_celular" class="form-control" pattern="^\d{6,15}$">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Cargo</label>
-              <select name="id_cargo" id="edit_id_cargo" class="form-select">
-                <option value="">Seleccione un cargo</option>
-                @foreach($cargos as $cargo)
-                  <option value="{{ $cargo->id_cargo }}">{{ $cargo->nombre_cargo }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Rol</label>
-              <select name="id_rol" id="edit_id_rol" class="form-select">
-                <option value="">Seleccione un rol</option>
-                @foreach($roles as $rol)
-                  <option value="{{ $rol->id_rol }}">{{ $rol->nombre_rol }}</option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-emi">Guardar Cambios</button>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+          <button type="button" class="btn btn-secondary" onclick="cerrarModalNuevo()">Cancelar</button>
         </div>
       </form>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/usuarios.js"></script>
+  {{-- Modal de Edición --}}
+  <div id="modalEditUsuario" class="modal-overlay">
+    <div class="modal-content-wrapper" style="max-width: 700px;">
+      <button onclick="cerrarModal()" class="modal-close">&times;</button>
+      <h2 class="section-title" style="margin-top: 0;">Editar Usuario</h2>
+      <form id="formEditUsuario" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="form-group">
+          <label for="edit_nombres" class="form-label">Nombres</label>
+          <input type="text" id="edit_nombres" name="nombres" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="edit_apellidos" class="form-label">Apellidos</label>
+          <input type="text" id="edit_apellidos" name="apellidos" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="edit_email" class="form-label">Email</label>
+          <input type="email" id="edit_email" name="email" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="edit_genero" class="form-label">Género</label>
+          <select id="edit_genero" name="genero" class="form-select">
+            <option value="">Seleccione</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="edit_celular" class="form-label">Celular</label>
+          <input type="text" id="edit_celular" name="celular" class="form-input" pattern="^\d{6,15}$">
+        </div>
+        <div class="form-group">
+          <label for="edit_cod_persona" class="form-label">Código de Persona</label>
+          <input type="text" id="edit_cod_persona" name="cod_persona" class="form-input" maxlength="20" required>
+        </div>
+        <div class="form-group">
+          <label for="edit_id_cargo" class="form-label">Cargo</label>
+          <select id="edit_id_cargo" name="id_cargo" class="form-select">
+            <option value="">Sin cargo</option>
+            @foreach($cargos as $cargo)
+              <option value="{{ $cargo->id_cargo }}">{{ $cargo->nombre_cargo }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Funciones para modal de nuevo usuario
+    function abrirModalNuevo() {
+      document.getElementById('modalNuevoUsuario').classList.add('show');
+    }
+
+    function cerrarModalNuevo() {
+      document.getElementById('modalNuevoUsuario').classList.remove('show');
+    }
+
+    // Funciones para modal de edición
+    function editarUsuario(id, nombres, apellidos, email, genero, celular, codPersona, idCargo) {
+      const modal = document.getElementById('modalEditUsuario');
+      const form = document.getElementById('formEditUsuario');
+
+      form.action = '{{ url("/usuarios") }}/' + id;
+      document.getElementById('edit_nombres').value = nombres;
+      document.getElementById('edit_apellidos').value = apellidos;
+      document.getElementById('edit_email').value = email;
+      document.getElementById('edit_genero').value = genero || '';
+      document.getElementById('edit_celular').value = celular || '';
+      document.getElementById('edit_cod_persona').value = codPersona || '';
+      document.getElementById('edit_id_cargo').value = idCargo || '';
+
+      modal.classList.add('show');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modalEditUsuario').classList.remove('show');
+    }
+
+    // Cerrar modales al hacer clic fuera
+    document.getElementById('modalEditUsuario').addEventListener('click', function (e) {
+      if (e.target === this) {
+        cerrarModal();
+      }
+    });
+
+    document.getElementById('modalNuevoUsuario').addEventListener('click', function (e) {
+      if (e.target === this) {
+        cerrarModalNuevo();
+      }
+    });
+
+    // Cerrar modales con tecla Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        cerrarModal();
+        cerrarModalNuevo();
+      }
+    });
+
+    // Abrir modal automáticamente si hay errores de validación
+    @if($errors->any() && !request()->route()->parameter('usuario'))
+      abrirModalNuevo();
+    @endif
+  </script>
+
 @endsection

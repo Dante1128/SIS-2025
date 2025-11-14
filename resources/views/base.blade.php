@@ -5,18 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Inicio</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="{{ asset("css/base.css") }}">
 
 </head>
 
 <body class="body-layout">
     <aside class="sidebar">
-        <div class="sidebar-logo-container">
-            <img src='{{ asset("img/logo-emi.png") }}' alt="Logo" class="sidebar-logo">
-        </div>
+        <img src='{{ asset("img/logo-emi.png") }}' alt="Logo" class="sidebar-logo">
 
         <div class="menu-item">
             <a href="#" class="menu-toggle menu-link">
@@ -28,7 +25,8 @@
                         class="fa-solid fa-diagram-project submenu-icon"></i>Dominio / Subdominio</a>
                 <a href="{{ route("gestiones.index") }}" class="submenu-link"><i
                         class="fa-solid fa-screwdriver-wrench submenu-icon"></i>Gestión</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-users submenu-icon"></i>Usuarios</a>
+                <a href="{{ route("usuarios.configuracion") }}" class="submenu-link"><i
+                        class="fa-solid fa-users submenu-icon"></i>Usuarios</a>
                 <a href="#" class="submenu-link"><i class="fa-solid fa-user-shield submenu-icon"></i>Roles</a>
                 <a href="#" class="submenu-link"><i class="fa-solid fa-key submenu-icon"></i>Privilegios</a>
             </div>
