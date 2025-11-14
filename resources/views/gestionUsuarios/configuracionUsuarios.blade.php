@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('content')
-  <link rel="stylesheet" href="{{ asset('css/gestion.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/usuarios.css') }}">
 
   <div class="dominio-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
@@ -48,7 +48,7 @@
                 <td style="text-align: center;">
                   <div style="display: flex; gap: 0.5rem; justify-content: center;">
                     <button type="button" class="btn btn-success btn-sm"
-                      onclick="editarUsuario({{ $usuario->id_persona }}, '{{ $usuario->nombres }}', '{{ $usuario->apellidos }}', '{{ $usuario->email }}', '{{ $usuario->genero }}', '{{ $usuario->celular }}', '{{ $usuario->cod_persona }}', {{ $usuario->id_cargo ?? 'null' }})">
+                      onclick="editarUsuario({{ $usuario->id_persona }}, '{{ $usuario->nombres }}', '{{ $usuario->apellidos }}', '{{ $usuario->email }}', '{{ $usuario->genero }}', '{{ $usuario->celular }}', '{{ $usuario->cod_persona }}', {{  $usuario->cargoPersona->cargo->id_cargo ?? 'null' }})">
                       Editar
                     </button>
                     <form action="{{ route('usuarios.destroy', $usuario->id_persona) }}" method="POST"
