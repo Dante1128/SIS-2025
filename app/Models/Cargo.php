@@ -16,11 +16,10 @@ class Cargo extends Model
     protected $fillable = [
         'nombre_cargo',
         'desc_cargo',
-        'id_persona',
     ];
 
-    public function persona()
+    public function cargoPersona()
     {
-        return $this->belongsTo(Persona::class, 'id_persona', 'id_persona');
+        return $this->hasMany(CargoPersona::class, 'id_cargo', 'id_cargo');
     }
 }

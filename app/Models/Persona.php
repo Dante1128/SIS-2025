@@ -22,13 +22,20 @@ class Persona extends Model
         'cod_persona',
     ];
 
-    public function cargo()
+    public function cargoPersona()
     {
-        return $this->hasOne(Cargo::class, 'id_persona', 'id_persona');
+        return $this->hasOne(CargoPersona::class, 'id_persona', 'id_persona');
     }
 
-    public function rol()
+    public function cargo()
     {
-        return $this->hasOne(Rol::class, 'id_persona', 'id_persona');
+        return $this->hasOneThrough(
+            Cargo::class,
+            CargoPersona::class,
+            'id_persona',
+            'id_cargo',
+            'id_persona',
+            'id_cargo'
+        );
     }
 }
