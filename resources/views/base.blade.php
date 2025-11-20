@@ -27,8 +27,6 @@
                         class="fa-solid fa-screwdriver-wrench submenu-icon"></i>Gestión</a>
                 <a href="{{ route("usuarios.configuracion") }}" class="submenu-link"><i
                         class="fa-solid fa-users submenu-icon"></i>Usuarios</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-user-shield submenu-icon"></i>Roles</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-key submenu-icon"></i>Privilegios</a>
             </div>
         </div>
 
@@ -38,12 +36,25 @@
                 <i class="fa-solid fa-chevron-down submenu-toggle-icon"></i>
             </a>
             <div class="submenu submenu-hidden">
-                <a href="#" class="submenu-link"><i class="fa-solid fa-school submenu-icon"></i>Unidad Académica</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-building submenu-icon"></i>Departamentos /
+                <a href="{{ route("departamentos.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-building submenu-icon"></i>Departamentos /
                     Facultades</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-book-open submenu-icon"></i>Programa</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-graduation-cap submenu-icon"></i>Curso</a>
-                <a href="#" class="submenu-link"><i class="fa-solid fa-bullseye submenu-icon"></i>Competencia</a>
+                <a href="{{ route("programas.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-book-open submenu-icon"></i>Programa</a>
+                <a href="{{ route("areas.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-archive submenu-icon"></i>Áreas</a>
+                <a href="{{ route("cursos.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-graduation-cap submenu-icon"></i>Curso</a>
+                <a href="{{ route("cursocuerpo.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-bullseye submenu-icon"></i>Cuerpo de Curso</a>
+                <a href="{{ route("bibliografia.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-bookmark submenu-icon"></i>Bilbiografía</a>
+                <a href="{{ route("perfiles.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-address-card submenu-icon"></i>Perfiles</a>
+                <a href="{{ route("prerequisitos.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-folder-open submenu-icon"></i>Prerequisitos</a>
+                <a href="{{ route("subsecuentes.index") }}" class="submenu-link"><i
+                        class="fa-solid fa-cube submenu-icon"></i>Subsecuenes</a>
             </div>
         </div>
 

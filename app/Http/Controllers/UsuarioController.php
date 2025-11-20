@@ -12,14 +12,14 @@ class UsuarioController extends Controller
 
     public function listado()
     {
-        $usuarios = Persona::with(['cargoPersona.cargo'])->get();
+        $usuarios = Persona::where('estado', 1)->with(['cargoPersona.cargo'])->get();
         return view('gestionUsuarios.listadoUsuarios', compact('usuarios'));
     }
 
 
     public function configuracion()
     {
-        $usuarios = Persona::with(['cargoPersona.cargo'])->get();
+        $usuarios = Persona::where('estado', 1)->with(['cargoPersona.cargo'])->get();
         $cargos = Cargo::all();
         return view('gestionUsuarios.configuracionUsuarios', compact('usuarios', 'cargos'));
     }
@@ -74,10 +74,10 @@ class UsuarioController extends Controller
 
     public function destroy($id)
     {
-        CargoPersona::where('id_persona', $id)->delete();
+        CargoPersona::where('id_persona', $id)->update(['estado' => 0]);
 
         $usuario = Persona::findOrFail($id);
-        $usuario->delete();
+        $usuario->update(['estado' => 0]);
 
         return redirect()->route('usuarios.configuracion')->with('success', 'Usuario eliminado correctamente');
     }
